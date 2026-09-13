@@ -10,7 +10,8 @@ LLM API key because model inference runs locally through Ollama.
 
 ## Architecture
 
-![LeetCode Coach Architecture](docs/architecture.png)
+<img width="1222" height="1287" alt="architecture" src="https://github.com/user-attachments/assets/210e78e0-2be0-4df8-b788-9a3f2c04a52c" />
+
 
 The system is organized into the following layers:
 
