@@ -120,9 +120,6 @@ leetcode-coach/
 │   ├── test_routing.py
 │   └── test_hint_limit.py
 │
-├── docs/
-│   └── architecture.png
-│
 ├── requirements.txt
 └── README.md
 ```
@@ -147,11 +144,6 @@ Verify your Python installation:
 python --version
 ```
 
-or on some systems:
-
-``` bash
-python3 --version
-```
 
 ## Download a Local Model
 
@@ -160,7 +152,7 @@ Pull the model configured in your application.
 For example:
 
 ``` bash
-ollama pull llama3.2:3b
+ollama pull <model name>
 ```
 
 Start Ollama if it is not already running:
