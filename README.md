@@ -153,18 +153,6 @@ or on some systems:
 python3 --version
 ```
 
-### Install Ollama
-
-Download and install Ollama from:
-
-https://ollama.com/
-
-Verify that Ollama is installed:
-
-``` bash
-ollama --version
-```
-
 ## Download a Local Model
 
 Pull the model configured in your application.
@@ -203,42 +191,11 @@ Replace `<your-username>` with your GitHub username.
 
 ### 2. Create a virtual environment
 
-#### Windows
-
-``` cmd
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-#### macOS/Linux
-
-``` bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
 
 ### 3. Install dependencies
 
 ``` bash
 pip install -r requirements.txt
-```
-
-If `requirements.txt` does not yet contain pytest, install it with:
-
-``` bash
-pip install pytest
-```
-
-## Example Requirements
-
-Your `requirements.txt` may contain packages similar to:
-
-``` text
-langchain
-langchain-ollama
-langgraph
-pydantic
-pytest
 ```
 
 The exact versions should match the versions used in your development
@@ -248,25 +205,12 @@ environment.
 
 Run the application from the project root.
 
-### Option 1: Run as a Python module
+### Run as a Python module
 
 ``` bash
 python -m app.main
 ```
 
-### Option 2: Run the file directly
-
-``` bash
-python app/main.py
-```
-
-The module-based command is generally recommended when your application
-uses package-relative imports such as:
-
-``` python
-from .graph import graph
-from .problem_loader import get_problem
-```
 
 ## Application Menu
 
@@ -334,24 +278,6 @@ Run all tests from the project root:
 pytest tests -v
 ```
 
-Run the hint-limit tests only:
-
-``` bash
-pytest tests/test_hint_limit.py -v
-```
-
-Run the routing tests only:
-
-``` bash
-pytest tests/test_routing.py -v
-```
-
-Run the problem-loader tests only:
-
-``` bash
-pytest tests/test_problem_loader.py -v
-```
-
 ## Current Test Coverage
 
 The project includes automated tests for:
@@ -362,85 +288,6 @@ The project includes automated tests for:
 -   Problem loading by problem ID.
 -   Problem lookup behavior.
 
-The current hint-limit test suite validates these scenarios:
-
-``` python
-def test_hint_limit_is_three():
-    state = {
-        "solved": False,
-        "hint_level": 3
-    }
-
-    result = route_after_evaluation(state)
-
-    assert result == "max_hints"
-```
-
-``` python
-def test_hint_is_allowed_below_three():
-    state = {
-        "solved": False,
-        "hint_level": 2
-    }
-
-    result = route_after_evaluation(state)
-
-    assert result == "hint"
-```
-
-``` python
-def test_solved_user_goes_to_complexity():
-    state = {
-        "solved": True,
-        "hint_level": 0
-    }
-
-    result = route_after_evaluation(state)
-
-    assert result == "complexity"
-```
-
-## Routing Logic
-
-The main routing rule is:
-
-``` python
-def route_after_evaluation(state):
-    if state["solved"]:
-        return "complexity"
-
-    if state["hint_level"] < 3:
-        return "hint"
-
-    return "max_hints"
-```
-
-This ensures:
-
--   Solved problems go to complexity analysis.
--   Unsolved problems below hint level 3 receive another hint.
--   Unsolved problems at hint level 3 go to the maximum-hints terminal
-    state.
--   A fourth hint is not generated.
-
-## Example Graph Configuration
-
-The graph uses conditional edges similar to:
-
-``` python
-builder.add_conditional_edges(
-    "evaluate",
-    route_after_evaluation,
-    {
-        "hint": "hint",
-        "complexity": "complexity",
-        "max_hints": "max_hints",
-    },
-)
-
-builder.add_edge("complexity", END)
-builder.add_edge("max_hints", END)
-```
 
 ## Session Persistence
 
@@ -505,16 +352,6 @@ to:
 -   Store difficulty and metadata.
 -   Load problems by ID.
 
-## Error Handling
-
-The application handles common user-input scenarios such as:
-
--   Invalid menu choices.
--   Unknown problem IDs.
--   Invalid session IDs.
--   User quit commands.
--   Missing session checkpoints.
--   Maximum hint limit reached.
 
 ## Metrics
 
@@ -560,127 +397,6 @@ Current project metrics include:
 -   Add personalized learning plans.
 -   Add a PostgreSQL persistence option for multi-user deployments.
 
-## Troubleshooting
-
-### `ModuleNotFoundError` when running the application
-
-Run the application from the project root:
-
-``` bash
-python -m app.main
-```
-
-Do not run it from inside the `app` directory when using relative
-imports.
-
-### Ollama connection error
-
-Make sure Ollama is running:
-
-``` bash
-ollama serve
-```
-
-Also verify that the configured model is installed:
-
-``` bash
-ollama list
-```
-
-### Model not found
-
-Pull the required model:
-
-``` bash
-ollama pull llama3.2:3b
-```
-
-Then update the model name in your code if necessary.
-
-### Tests cannot import the `app` package
-
-Make sure:
-
--   You are running pytest from the project root.
--   `app/__init__.py` exists.
--   The virtual environment is activated.
--   Dependencies are installed.
-
-Run:
-
-``` bash
-pytest tests -v
-```
-
-### Session cannot be resumed
-
-Check that:
-
--   The session ID was copied correctly.
--   The SQLite database still exists.
--   The application is using the same checkpoint database.
--   The session was created using the current application configuration.
-
-## GitHub Setup
-
-Initialize Git if needed:
-
-``` bash
-git init
-```
-
-Add files:
-
-``` bash
-git add .
-```
-
-Create the first commit:
-
-``` bash
-git commit -m "Initial commit for LeetCode Coach"
-```
-
-Authenticate with GitHub CLI:
-
-``` bash
-gh auth login
-```
-
-Create the GitHub repository and push:
-
-``` bash
-gh repo create leetcode-coach --public --source=. --remote=origin --push
-```
-
-For later changes:
-
-``` bash
-git status
-git add .
-git commit -m "Update coaching workflow"
-git push
-```
-
-## Recommended `.gitignore`
-
-Create a `.gitignore` file in the project root:
-
-``` gitignore
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.env
-data/*.db
-.idea/
-.vscode/
-.DS_Store
-```
-
-Do not commit secrets, virtual environments, cache folders, or local
-SQLite databases unless you intentionally want to share them.
-
 ## Project Status
 
 The project currently provides:
@@ -692,8 +408,3 @@ The project currently provides:
 -   SQLite session checkpointing.
 -   New-session and resume-session support.
 -   Automated routing tests.
-
-## License
-
-This project is available for educational and portfolio use. Add a
-license file if you plan to distribute or reuse the project publicly.
