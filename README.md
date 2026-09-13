@@ -167,8 +167,7 @@ In another terminal, verify that the model is available:
 ollama list
 ```
 
-> If your code uses a different model name, replace `llama3.2:3b` with
-> the model name configured in your project.
+> I have used phi4-mini:3.8b as the LLM mode..
 
 ## Installation
 
